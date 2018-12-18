@@ -123,6 +123,39 @@ namespace ECDSAKeyManager
 
         }
 
+        public static string SignMessage(string PrivateKey, string Message)
+        {
+
+
+            try
+            {
+                byte[] privateKey = ConvertToBytes(PrivateKey);
+                byte[] message = ConvertToBytes(Message);
+
+
+
+                using (CngKey importedKey = CngKey.Import(privateKey, CngKeyBlobFormat.EccPrivateBlob))
+                {
+                    using (ECDsaCng importedDSA = new ECDsaCng(importedKey))
+                    {
+                        byte[] signed = importedDSA.SignData(message);
+                        string messageAuthentication = BitConverter.ToString(signed).Replace("-", String.Empty);
+
+                        return messageAuthentication;
+                    }
+                }
+
+
+
+
+
+            }
+            catch
+            {
+                return "";
+            }
+        }
+
         private static byte[] ConvertToBytes(string InputValue)
         {
             //we are often converting byte arrays to strings
